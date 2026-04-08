@@ -3,7 +3,7 @@ import { LinearClient } from "@linear/sdk";
 import * as dotenv from "dotenv";
 import * as path from "path";
 
-dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 // --- Types ---
 
@@ -19,7 +19,7 @@ interface TestRailTest {
   case_id: number;
   title: string;
   status_id: number;
-  custom_issue_field?: string;
+  custom_case_issues?: string;
   [key: string]: unknown;
 }
 
@@ -78,12 +78,12 @@ async function getFailedTests(client: AxiosInstance, runId: string, statusId: nu
 // --- Linear API ---
 
 function extractLinearId(test: TestRailTest): string | null {
-  const fieldValue = test.custom_issue_field;
+  const fieldValue = test.custom_case_issues;
   if (!fieldValue || typeof fieldValue !== "string") {
     // Log available custom fields for debugging on first miss
     const customFields = Object.keys(test).filter((k) => k.startsWith("custom_"));
     if (customFields.length > 0) {
-      console.warn(`  [debug] No value in custom_issue_field for C${test.case_id}. Available custom fields: ${customFields.join(", ")}`);
+      console.warn(`  [debug] No value in custom_case_issues for C${test.case_id}. Available custom fields: ${customFields.join(", ")}`);
     }
     return null;
   }

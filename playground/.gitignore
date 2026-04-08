@@ -1,4 +1,7 @@
 
+# Environment
+.env
+
 # Playwright
 node_modules/
 /test-results/
